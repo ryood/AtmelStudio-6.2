@@ -1,0 +1,20 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Atmel Studio Solution File, Format Version 11.00
+Project("{54F91283-7BC4-4236-8FF9-10F437C3AD48}") = "Adjust_POT_Test", "Adjust_POT_Test\Adjust_POT_Test.cproj", "{0A8A631B-BFB5-4D75-99D7-84EC364BDE37}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|AVR = Debug|AVR
+		Release|AVR = Release|AVR
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{0A8A631B-BFB5-4D75-99D7-84EC364BDE37}.Debug|AVR.ActiveCfg = Debug|AVR
+		{0A8A631B-BFB5-4D75-99D7-84EC364BDE37}.Debug|AVR.Build.0 = Debug|AVR
+		{0A8A631B-BFB5-4D75-99D7-84EC364BDE37}.Release|AVR.ActiveCfg = Release|AVR
+		{0A8A631B-BFB5-4D75-99D7-84EC364BDE37}.Release|AVR.Build.0 = Release|AVR
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

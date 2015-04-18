@@ -1,0 +1,20 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Atmel Studio Solution File, Format Version 11.00
+Project("{54F91283-7BC4-4236-8FF9-10F437C3AD48}") = "I2C_LCD_ST7032i_Test", "I2C_LCD_ST7032i_Test\I2C_LCD_ST7032i_Test.cproj", "{6B1D88DB-A202-4726-9842-1AF8C24C2D24}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|AVR = Debug|AVR
+		Release|AVR = Release|AVR
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{6B1D88DB-A202-4726-9842-1AF8C24C2D24}.Debug|AVR.ActiveCfg = Debug|AVR
+		{6B1D88DB-A202-4726-9842-1AF8C24C2D24}.Debug|AVR.Build.0 = Debug|AVR
+		{6B1D88DB-A202-4726-9842-1AF8C24C2D24}.Release|AVR.ActiveCfg = Release|AVR
+		{6B1D88DB-A202-4726-9842-1AF8C24C2D24}.Release|AVR.Build.0 = Release|AVR
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
