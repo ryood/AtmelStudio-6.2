@@ -62,6 +62,20 @@ void adc_init(void)
 }
 
 /*==============================================
+ * 波形生成割込み
+ *==============================================*/
+
+//******************************************************************
+// timer0 setup
+// set prescaler to 1, 16,000,000Hz / 16 clock
+//
+
+//******************************************************************
+// Timer2 Interrupt Service at 16,000,000Hz = 1uSec
+//
+ISR(TIMER0_OVF_vect)
+
+/*==============================================
  * 引数：変換するADCチャンネル
  * 返値：ADCの読み取り値(0..1023)
  *==============================================*/
@@ -81,7 +95,7 @@ int16_t adc_convert(int8_t channel)
 int main(void)
 {
 	int interval = 10;
-	int adjust = 0;
+	int adjust = 10;
 	
 	DDRD = 0x01;
 	
@@ -89,11 +103,11 @@ int main(void)
 	
     while(1)
     {
-		interval = adc_convert(0);
-		adjust = adc_convert(1);
+		//interval = adc_convert(0);
+		//adjust = adc_convert(1);
 		
 		PORTD ^= 0x01;
-		wait_ms(interval/10);
+		//wait_ms(interval/10);
 		wait_us(adjust);
     }
 }
