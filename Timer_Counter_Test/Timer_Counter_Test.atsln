@@ -1,0 +1,26 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Atmel Studio Solution File, Format Version 11.00
+Project("{54F91283-7BC4-4236-8FF9-10F437C3AD48}") = "Timer_Counter_Test", "Timer_Counter_Test\Timer_Counter_Test.cproj", "{5F4CBD46-D664-4A91-9D10-09149E856264}"
+EndProject
+Project("{54F91283-7BC4-4236-8FF9-10F437C3AD48}") = "FastPWM_Test", "FastPWM_Test\FastPWM_Test.cproj", "{69369874-7611-43AB-9AE1-2B9A5D882479}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|AVR = Debug|AVR
+		Release|AVR = Release|AVR
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{5F4CBD46-D664-4A91-9D10-09149E856264}.Debug|AVR.ActiveCfg = Debug|AVR
+		{5F4CBD46-D664-4A91-9D10-09149E856264}.Debug|AVR.Build.0 = Debug|AVR
+		{5F4CBD46-D664-4A91-9D10-09149E856264}.Release|AVR.ActiveCfg = Release|AVR
+		{5F4CBD46-D664-4A91-9D10-09149E856264}.Release|AVR.Build.0 = Release|AVR
+		{69369874-7611-43AB-9AE1-2B9A5D882479}.Debug|AVR.ActiveCfg = Debug|AVR
+		{69369874-7611-43AB-9AE1-2B9A5D882479}.Debug|AVR.Build.0 = Debug|AVR
+		{69369874-7611-43AB-9AE1-2B9A5D882479}.Release|AVR.ActiveCfg = Release|AVR
+		{69369874-7611-43AB-9AE1-2B9A5D882479}.Release|AVR.Build.0 = Release|AVR
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
