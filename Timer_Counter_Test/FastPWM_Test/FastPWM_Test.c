@@ -27,7 +27,7 @@ void timer1_init_FastPWM(uint16_t cycle, uint16_t duty)
 
 	
 	// Compare Output OC1A, OC1B
-	TCCR1A |= (1 << COM1A1) | (0 << COM1A0);
+	TCCR1A |= (0 << COM1A1) | (1 << COM1A0);
 	TCCR1A |= (1 << COM1B1) | (0 << COM1B0);
 	
 	
@@ -40,7 +40,7 @@ int main(void)
 {
 	DDRB  = 0xFF;  // PB1(OC1A) o—Í
 
-	timer1_init_FastPWM(2000, 1500);
+	timer1_init_FastPWM(500, 375);
 	sei();
 	
     while(1)
