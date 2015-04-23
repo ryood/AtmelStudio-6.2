@@ -21,7 +21,7 @@ void timer1_init_FastPWM(uint16_t cycle, uint16_t duty)
 	// Initialize Counter
 	TCNT1 = 0;
 	
-	// First PWM mode, TOP = OCR1A
+	// Phase and Frequency Correct PWM Mode, TOP = OCR1A
 	TCCR1B |= (1 << WGM13) | (0 << WGM12);
 	TCCR1A |= (0 << WGM11) | (1 << WGM10);
 
