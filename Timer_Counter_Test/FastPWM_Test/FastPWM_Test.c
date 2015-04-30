@@ -40,7 +40,7 @@ int main(void)
 {
 	DDRB  = 0xFF;  // PB1(OC1A) èoóÕ
 
-	timer1_init_FastPWM(500, 375);
+	timer1_init_FastPWM(1000, 500);
 	sei();
 	
     while(1)
