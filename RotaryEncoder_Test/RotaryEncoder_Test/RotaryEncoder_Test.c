@@ -22,7 +22,33 @@
 #define LED_PORT	PORTB
 #define LED_RED		1
 #define LED_GREEN	2
-#define LED_BLUE	6 
+#define LED_BLUE	6
+
+int readRE(void) 
+{
+	static uint8_t index;
+	int retVal = 0;
+	
+	index = (index << 2) | (RE_PIN & _BV(RE_A)) | (RE_PIN & _BV(RE_B));
+	index &= 0b1111;
+	
+	switch (index) {
+	// 時計回り
+	case 0b0001:	// 00 -> 01
+	case 0b1110:	// 11 -> 10
+		retVal = -1;
+		break;
+	// 反時計回り
+	case 0b0010:	// 00 -> 10
+	case 0b1101:	// 11 -> 01
+		retVal = 1;
+		break;
+	}
+	
+	_delay_ms(5);	// (とりあえず)チャタリング防止
+	
+	return retVal;	 
+}
 
 int main(void)
 {
@@ -36,25 +62,30 @@ int main(void)
 		
     while(1)
     {
-		int rotA, rotB, sw;
-
-		rotA = RE_PIN & _BV(RE_A);
-		rotB = RE_PIN & _BV(RE_B);
+		int sw;
+		
+		switch (readRE()) {
+		case 1:
+			LED_PORT = 0;
+			_delay_ms(50);
+			LED_PORT |= _BV(LED_GREEN);
+			LED_PORT &= ~_BV(LED_RED);
+			break;
+		case -1:
+			LED_PORT = 0;
+			_delay_ms(50);
+			LED_PORT |= _BV(LED_RED);
+			LED_PORT &= ~_BV(LED_GREEN);
+			break;
+		}
+		
 		sw = RE_PIN & _BV(RE_SW);
 		
-		if (rotA)
-			LED_PORT |= _BV(LED_RED);
-		else
-			LED_PORT &= ~_BV(LED_RED);
-			
-		if (rotB)
-			LED_PORT |= _BV(LED_GREEN);
-		else
-			LED_PORT &= ~_BV(LED_GREEN);
-			
 		if (sw)
 			LED_PORT |= _BV(LED_BLUE);
 		else
 			LED_PORT &= ~_BV(LED_BLUE);
-    }
+		
+		_delay_ms(5);
+	}
 }
