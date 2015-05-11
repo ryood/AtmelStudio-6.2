@@ -5,9 +5,9 @@
  *  Author: gizmo
  */ 
 
-
 #include <avr/io.h>
 #include <avr/interrupt.h>
+#include <avr/sfr_defs.h>
 #include <stdint.h>
 
 #define F_CPU	16000000UL
@@ -28,12 +28,17 @@
 #define RE_B	1
 #define RE_SW	2
 
+// Potentiometer
+//
+#define POT_DUTY	0
+
 const uint16_t cycle_table[] = {
 	20000, 10000, 5000, 2000, 1000, 500, 200, 100, 50, 20, 10, 5, 2
 };
 
 #define CYCLE_TABLE_ELEMENTS	(sizeof(cycle_table)/sizeof(uint16_t))
-#define INITIAL_FREQ	4
+#define INITIAL_FREQ	(4)
+#define INITIAL_DUTY	(64)
 
 /*------------------------------------------------------------------------/
  * PWM
@@ -72,10 +77,10 @@ void timer1_init_PWM(uint16_t cycle, uint16_t duty)
  * Rotary Encoder
  *
  ------------------------------------------------------------------------*/
-int readRE(void)
+int8_t readRE(void)
 {
 	static uint8_t index;
-	int retVal = 0;
+	int8_t retVal = 0;
 	
 	index = (index << 2) | (RE_PIN & _BV(RE_A)) | (RE_PIN & _BV(RE_B));
 	index &= 0b1111;
@@ -99,42 +104,117 @@ int readRE(void)
 }
 
 /*------------------------------------------------------------------------/
+ * Potentiometer
+ *
+ ------------------------------------------------------------------------*/
+void adc_init(void)
+{
+	// ADC使用ピンをデジタル入力禁止 PC0, PC1
+	DIDR0 |= _BV(ADC0D) | _BV(ADC1D);
+	
+	// ADCの基準電圧(AVCC)
+	ADMUX =	_BV(REFS0);
+	
+	// ADC動作設定
+	ADCSRA = 0b10000111		// bit2-0: 111 = 128分周	16MHz/128=125kHz (50k～200kHzであること)
+		| _BV(ADSC);		// 1回目変換開始(調整)
+}
+
+int16_t adc_convert(int8_t channel)
+{
+	ADMUX = _BV(REFS0)		// ADCの基準電圧(AVCC)
+		| channel;			// AD変換チャンネル
+	
+	ADCSRA |= _BV(ADSC);	// 変換開始
+	
+	loop_until_bit_is_set(ADCSRA, ADIF); // 変換完了まで待つ
+	
+	return ADC;
+}
+
+int8_t readDuty(void)
+{
+	// 0..128
+	return (uint16_t)adc_convert(POT_DUTY) >> 9;
+}
+
+/*------------------------------------------------------------------------/
  * main routine
  *
  ------------------------------------------------------------------------*/
+static void wait_us(short t)
+{
+	while(t-->=0){
+		asm volatile ("nop");
+		asm volatile ("nop");
+	}
+}
+
+// この関数でミリ秒のウェイトを入れます。引数 100 = 100ミリ秒ウェイト
+// クロックスピードにより調整してください。
+static void wait_ms(short t)
+{
+	while(t-->=0){
+		wait_us(1000);
+	}
+}
+
 int main(void)
 {
-	int freq = INITIAL_FREQ;
-	int REval;
-	int cycle;
-	int duty;
-	
+#if 0		
+	uint8_t freq = INITIAL_FREQ;
+	int8_t REval;
+	uint16_t cycle;
+	uint16_t duty = 50;
+	uint8_t old_duty = INITIAL_DUTY; 
+	uint8_t duty_val;
+
 	// PWM
+	//
 	PWM_DIR = _BV(PWM_A_PORT) | _BV(PWM_B_PORT);
 	
 	// Rotary Encoder
+	//
 	RE_DIR = 0;
 	// PullUp
 	RE_PORT = _BV(RE_A) | _BV(RE_B) | _BV(RE_SW);
+#endif
+	
+	// Initialize ADC
+	//
+	int16_t duty;
+	adc_init();
+	DDRB = 0x07;
 
 	// Initialize PWM
-	cycle = cycle_table[freq];
-	duty = cycle / 2;
-	timer1_init_PWM(cycle, duty);
+	//
+	//cycle = cycle_table[freq];
+	//timer1_init_PWM(cycle,  cycle / 2);
 	
 	//sei();
 	
     while(1)
-    {		
+    {
+		duty = adc_convert(0);
+		
+		PORTB ^= 0x07;
+		wait_ms(duty);
+		
+		/*		
 		REval = readRE();
-		if (REval != 0) {
+		if (REval != 0 || duty != old_duty) {
+			old_duty = duty;
+			
 			freq += REval;
 			freq = freq < 0 ? 0 : (freq >= CYCLE_TABLE_ELEMENTS ? CYCLE_TABLE_ELEMENTS - 1 : freq);
 			
 			cycle = cycle_table[freq];
-			duty = cycle / 2;
+			duty_val = ((uint32_t)cycle * duty >> 7);
+			if (duty_val == 0)
+				duty_val = 1;
 			
 			timer1_set_cycle_duty(cycle, duty);
 		}
+		*/
     }
 }
