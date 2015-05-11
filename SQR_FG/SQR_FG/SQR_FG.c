@@ -120,28 +120,31 @@ void adc_init(void)
 		| _BV(ADSC);		// 1回目変換開始(調整)
 }
 
-int16_t adc_convert(int8_t channel)
+uint8_t adc_convert8(uint8_t channel)
 {
 	ADMUX = _BV(REFS0)		// ADCの基準電圧(AVCC)
+		| _BV(ADLAR)		// 左詰め
 		| channel;			// AD変換チャンネル
 	
 	ADCSRA |= _BV(ADSC);	// 変換開始
 	
 	loop_until_bit_is_set(ADCSRA, ADIF); // 変換完了まで待つ
 	
-	return ADC;
+	return ADCH;
 }
 
-int8_t readDuty(void)
+// 7bit 0..127
+uint8_t readDuty(void)
 {
-	// 0..128
-	return (uint16_t)adc_convert(POT_DUTY) >> 9;
+	// 8bit -> 7bit
+	return adc_convert8(POT_DUTY) >> 1;
 }
 
 /*------------------------------------------------------------------------/
  * main routine
  *
  ------------------------------------------------------------------------*/
+#if 0
 static void wait_us(short t)
 {
 	while(t-->=0){
@@ -158,16 +161,16 @@ static void wait_ms(short t)
 		wait_us(1000);
 	}
 }
+#endif
 
 int main(void)
 {
-#if 0		
 	uint8_t freq = INITIAL_FREQ;
 	int8_t REval;
 	uint16_t cycle;
-	uint16_t duty = 50;
+	uint8_t duty;
 	uint8_t old_duty = INITIAL_DUTY; 
-	uint8_t duty_val;
+	uint16_t duty_val;
 
 	// PWM
 	//
@@ -178,30 +181,23 @@ int main(void)
 	RE_DIR = 0;
 	// PullUp
 	RE_PORT = _BV(RE_A) | _BV(RE_B) | _BV(RE_SW);
-#endif
 	
 	// Initialize ADC
 	//
-	int16_t duty;
 	adc_init();
-	DDRB = 0x07;
-
+	
 	// Initialize PWM
 	//
-	//cycle = cycle_table[freq];
-	//timer1_init_PWM(cycle,  cycle / 2);
+	cycle = cycle_table[freq];
+	timer1_init_PWM(cycle,  cycle / 2);
 	
 	//sei();
 	
     while(1)
     {
-		duty = adc_convert(0);
-		
-		PORTB ^= 0x07;
-		wait_ms(duty);
-		
-		/*		
+		duty = readDuty();		
 		REval = readRE();
+		
 		if (REval != 0 || duty != old_duty) {
 			old_duty = duty;
 			
@@ -213,8 +209,7 @@ int main(void)
 			if (duty_val == 0)
 				duty_val = 1;
 			
-			timer1_set_cycle_duty(cycle, duty);
+			timer1_set_cycle_duty(cycle, duty_val);
 		}
-		*/
     }
 }
